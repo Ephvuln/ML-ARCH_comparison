@@ -5,6 +5,19 @@ import sys
 train_labeled_studies = "./MURA-v1.1/train_labeled_studies.csv"
 valid_labeled_studies = "./MURA-v1.1/valid_labeled_studies.csv"
 
+def is_image(filename):
+	#https://stackoverflow.com/questions/62544528/tensorflow-decodejpeg-expected-image-jpeg-png-or-gif-got-unknown-format-st
+	data = open(filename,'rb').read(10)
+
+	# check if file is PNG
+	if data[:8] == b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a':
+		return True
+
+	return False
+
+
+
+
 def init_dirs():
 	# Clean
 	os.system("rm -rf Dataset")
@@ -35,10 +48,14 @@ def copy_files(csvfile, name):
 			images_in_file = os.listdir(row[0])
 
 			for imgf in images_in_file:
-				os.system("ln -s ../../../"+row[0]+imgf+" "+loc+new_name+imgf)
-				i +=1
-				if i %500 == 0:
-					print(i)
+
+				if is_image(row[0]+imgf):
+					os.system("ln "+row[0]+imgf+" "+loc+new_name+imgf)
+					i +=1
+					if i %500 == 0:
+						print(i)
+				else:
+					print("Skipping non-png.")
 
 
 
