@@ -36,26 +36,27 @@ def copy_files(csvfile, name):
 	with open(csvfile) as stud_label:
 		csvFile = csv.reader(stud_label, delimiter=',')
 		for row in csvFile:
-			if row[1] == '1':
-				loc = "./Dataset/"+name+"/positive/"
-			else:
-				loc = "./Dataset/"+name+"/negative/"
-
-			new_name = row[0]
-			new_name = new_name.replace("MURA-v1.1/"+name,'')
-			new_name = new_name.replace('/','')
-
-			images_in_file = os.listdir(row[0])
-
-			for imgf in images_in_file:
-
-				if is_image(row[0]+imgf):
-					os.system("ln "+row[0]+imgf+" "+loc+new_name+imgf)
-					i +=1
-					if i %500 == 0:
-						print(i)
+			if 'WRIST' in row[0]:
+				if row[1] == '1':
+					loc = "./Dataset/"+name+"/positive/"
 				else:
-					print("Skipping non-png.")
+					loc = "./Dataset/"+name+"/negative/"
+
+				new_name = row[0]
+				new_name = new_name.replace("MURA-v1.1/"+name,'')
+				new_name = new_name.replace('/','')
+
+
+				images_in_file = os.listdir(row[0])
+
+				for imgf in images_in_file:
+					if is_image(row[0]+imgf):
+						os.system("ln "+row[0]+imgf+" "+loc+new_name+imgf)
+						i +=1
+						if i %500 == 0:
+							print(i)
+					else:
+						print("Skipping non-png.")
 
 
 
