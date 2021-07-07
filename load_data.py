@@ -3,17 +3,23 @@ import numpy as np
 
 image_shape = (224,224)
 input_shape = image_shape+(3,)
-
+means = [0.485, 0.456, 0.406]
+stds = [0.229, 0.224, 0.225]
 
 training_set = tf.keras.preprocessing.image_dataset_from_directory("./Dataset/train/",image_size=image_shape,label_mode='binary',color_mode='rgb')#color_mode='grayscale')
 test_set = tf.keras.preprocessing.image_dataset_from_directory("./Dataset/valid/",image_size=image_shape,label_mode='binary',color_mode='rgb')#color_mode='grayscale')
 
 
 # https://keras.io/guides/transfer_learning/
+
 model = tf.keras.applications.VGG16(weights='imagenet',input_shape=input_shape,include_top=False)
 
+
 inputs = tf.keras.Input(shape=input_shape)
-x =  model(inputs,training=False)
+x = tf.keras.layers.experimental.preprocessing.Rescaling(scale=1./255)(inputs)
+x = tf.keras.layers.experimental.preprocessing.Normalization(mean=means,variance=stds)(x)
+
+x =  model(x,training=False)
 x = tf.keras.layers.Flatten()(x)
 x = tf.keras.layers.Dense(4096,activation="relu")(x)
 x = tf.keras.layers.Dropout(0.5)(x)
