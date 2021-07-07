@@ -32,7 +32,7 @@ outputs = tf.keras.layers.Dense(1,activation="sigmoid")(x)
 model = tf.keras.Model(inputs,outputs)
 
 model.compile(optimizer=tf.keras.optimizers.Adam(),
-              loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+              loss=tf.keras.losses.BinaryCrossentropy(),
               metrics=[tf.keras.metrics.BinaryAccuracy()])
 
 model.summary()
