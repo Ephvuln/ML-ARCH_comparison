@@ -19,23 +19,28 @@ model.trainable = False
 inputs = tf.keras.Input(shape=input_shape)
 x = tf.keras.layers.experimental.preprocessing.Rescaling(scale=1./255)(inputs)
 x = tf.keras.layers.experimental.preprocessing.Normalization(mean=means,variance=variances)(x)
-
-x =  model(x,training=False)
+x = model(x,training=False)
 x = tf.keras.layers.Flatten()(x)
 x = tf.keras.layers.Dense(4096,activation="relu")(x)
 x = tf.keras.layers.Dropout(0.5)(x)
 x = tf.keras.layers.Dense(4096,activation="relu")(x)
 x = tf.keras.layers.Dropout(0.5)(x)
 outputs = tf.keras.layers.Dense(1,activation="sigmoid")(x)
-
-
-
 model = tf.keras.Model(inputs,outputs)
+
+metrics = [
+    tf.keras.metrics.BinaryAccuracy(name='acc'),
+]
+class_weight = {0: 1/5765, # Negative
+                1: 1/3987} # Positive
 
 model.compile(optimizer=tf.keras.optimizers.Adam(),
               loss=tf.keras.losses.BinaryCrossentropy(),
-              metrics=[tf.keras.metrics.BinaryAccuracy()])
+              metrics=metrics)
 
 model.summary()
 
-model.fit(training_set,epochs=6,validation_data=valid_set)
+model.fit(training_set,
+        class_weight=class_weight,
+        epochs=6,
+        validation_data=valid_set)
