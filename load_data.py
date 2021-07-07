@@ -31,8 +31,10 @@ model = tf.keras.Model(inputs,outputs)
 metrics = [
     tf.keras.metrics.BinaryAccuracy(name='acc'),
 ]
-class_weight = {0: 1/5765, # Negative
-                1: 1/3987} # Positive
+num_neg = 5765
+num_pos = 3987
+class_weight = {0: num_pos/(num_pos+num_neg), # Negative
+                1: num_neg/(num_pos+num_neg)} # Positive
 
 model.compile(optimizer=tf.keras.optimizers.Adam(),
               loss=tf.keras.losses.BinaryCrossentropy(),
