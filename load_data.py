@@ -8,7 +8,7 @@ stds = [0.229, 0.224, 0.225]
 variances = [0.229*0.229, 0.224*0.224, 0.225*0.225]
 
 training_set = tf.keras.preprocessing.image_dataset_from_directory("./Dataset/train/",image_size=image_shape,label_mode='binary',color_mode='rgb')#color_mode='grayscale')
-test_set = tf.keras.preprocessing.image_dataset_from_directory("./Dataset/valid/",image_size=image_shape,label_mode='binary',color_mode='rgb')#color_mode='grayscale')
+valid_set = tf.keras.preprocessing.image_dataset_from_directory("./Dataset/valid/",image_size=image_shape,label_mode='binary',color_mode='rgb')#color_mode='grayscale')
 
 
 # https://keras.io/guides/transfer_learning/
@@ -38,4 +38,4 @@ model.compile(optimizer=tf.keras.optimizers.Adam(),
 
 model.summary()
 
-model.fit(training_set,epochs=2)
+model.fit(training_set,epochs=6,validation_data=valid_set)
